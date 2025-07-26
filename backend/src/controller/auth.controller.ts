@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import signUpValidator from '../validators/signUp.validator.js';
+import { prisma } from '../services/database.service.js';
+import bcrypt from 'bcryptjs';
+import generateToken from '../utils/generateToken.utils.js';
 
 const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,8 +20,6 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
       password,
     });
 
-    console.log(success, error?.issues[0]);
-
     if (!success) {
       return res.status(400).json({
         success: false,
@@ -26,9 +27,59 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    res.json({ message: 'Sign up successful', data });
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is already taken',
+      });
+    }
+
+    //hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await prisma.user.create({
+      data: {
+        ...data,
+        password: hashedPassword,
+      },
+      omit: {
+        password: true,
+      },
+    });
+
+    if (!newUser) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to create user, try again later',
+      });
+    }
+
+    const token = generateToken(newUser.id.toString());
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'strict',
+    });
+
+    res.json({
+      success: true,
+      message: 'Sign up successful',
+      data: newUser,
+    });
   } catch (error) {
-    next(error);
+    console.log('Error in signUp', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
   }
 };
 
