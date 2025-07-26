@@ -3,7 +3,11 @@ import { z } from 'zod';
 const signUpValidator = z
   .object({
     fullName: z
-      .string()
+      .string({
+        required_error: 'Full name is required',
+        invalid_type_error: 'Full name must be a string',
+      })
+      .nonempty('Full name is required')
       .trim()
       .min(1, 'Full name is required')
       .min(3, 'Full name must be at least 3 characters')
@@ -20,12 +24,14 @@ const signUpValidator = z
     email: z
       .string()
       .trim()
+      .nonempty('Email is required')
       .min(1, 'Email is required')
       .email('Invalid email address')
       .max(254, 'Email must be 254 characters or less')
       .transform((val) => val.toLowerCase()),
     password: z
       .string()
+      .nonempty('Password is required')
       .min(1, 'Password is required')
       .min(8, 'Password must be at least 8 characters long')
       .max(128, 'Password must be 128 characters or less')

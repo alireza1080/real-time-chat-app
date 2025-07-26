@@ -17,7 +17,9 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
       password,
     });
 
-        if (!success) {
+    console.log(success, error?.issues[0]);
+
+    if (!success) {
       return res.status(400).json({
         success: false,
         message: error.issues[0].message,
