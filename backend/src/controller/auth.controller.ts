@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import signUpValidator from '../validators/signUp.validator.js';
 import { prisma } from '../services/database.service.js';
 import bcrypt from 'bcryptjs';
 import generateToken from '../utils/generateToken.utils.js';
 
-const signUp = async (req: Request, res: Response, next: NextFunction) => {
+const signUp = async (req: Request, res: Response) => {
   try {
     if (!req.body)
       return res.status(400).json({
