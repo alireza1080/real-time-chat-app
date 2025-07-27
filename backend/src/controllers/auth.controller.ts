@@ -7,6 +7,13 @@ import signInValidator from '../validators/signIn.validator.js';
 
 const signUp = async (req: Request, res: Response) => {
   try {
+    if (req.isUserLoggedIn) {
+      return res.status(400).json({
+        success: false,
+        message: 'User is already logged in and cannot sign up again',
+      });
+    }
+
     if (!req.body)
       return res.status(400).json({
         message: 'fullName, email, password are required',
@@ -86,6 +93,13 @@ const signUp = async (req: Request, res: Response) => {
 
 const signIn = async (req: Request, res: Response) => {
   try {
+    if (req.isUserLoggedIn) {
+      return res.status(400).json({
+        success: false,
+        message: 'User is already logged in and cannot sign in again',
+      });
+    }
+
     if (!req.body)
       return res.status(400).json({
         message: 'email, password are required',
@@ -149,11 +163,61 @@ const signIn = async (req: Request, res: Response) => {
   }
 };
 
-const getUser = async (req: Request, res: Response) => {};
+const getUser = async (req: Request, res: Response) => {
+  try {
+    if (!req.isUserLoggedIn) {
+      return res.status(401).json({
+        success: false,
+        message: 'User is not logged in and cannot get user profile',
+      });
+    }
 
-const updateUser = async (req: Request, res: Response) => {};
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      omit: {
+        password: true,
+      },
+    });
 
-const logout = async (req: Request, res: Response) => {
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'User profile fetched successfully',
+      data: user,
+    });
+  } catch (error) {
+    console.log('Error in getUser', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};
+
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    if (!req.isUserLoggedIn) {
+      return res.status(401).json({
+        success: false,
+        message: 'User is not logged in and cannot update user profile',
+      });
+    }
+  } catch (error) {
+    console.log('Error in updateUser', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};
+
+const logout = async (_req: Request, res: Response) => {
   res.cookie('jwt', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'development',
