@@ -3,6 +3,7 @@ import signUpValidator from '../validators/signUp.validator.js';
 import { prisma } from '../services/database.service.js';
 import bcrypt from 'bcryptjs';
 import generateToken from '../utils/generateToken.utils.js';
+import signInValidator from '../validators/signIn.validator.js';
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -76,6 +77,71 @@ const signUp = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log('Error in signUp', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};
+
+const signIn = async (req: Request, res: Response) => {
+  try {
+    if (!req.body)
+      return res.status(400).json({
+        message: 'email, password are required',
+        success: false,
+      });
+
+    const { email, password } = req.body;
+
+    const { success, error, data } = signInValidator.safeParse({
+      email,
+      password,
+    });
+
+    if (!success) {
+      return res.status(400).json({
+        success: false,
+        message: error.issues[0].message,
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email or password',
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email or password',
+      });
+    }
+
+    const token = generateToken(user.id.toString());
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'strict',
+    });
+
+    res.json({
+      success: true,
+      message: 'Sign in successful',
+      data: user,
+    });
+  } catch (error) {
+    console.log('Error in signIn', error);
     return res.status(500).json({
       success: false,
       message: 'Internal server error',
