@@ -94,7 +94,7 @@ const signIn = async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
 
-    const { success, error, data } = signInValidator.safeParse({
+    const { success } = signInValidator.safeParse({
       email,
       password,
     });
@@ -102,7 +102,7 @@ const signIn = async (req: Request, res: Response) => {
     if (!success) {
       return res.status(400).json({
         success: false,
-        message: error.issues[0].message,
+        message: 'Invalid email or password',
       });
     }
 
@@ -149,4 +149,4 @@ const signIn = async (req: Request, res: Response) => {
   }
 };
 
-export { signUp };
+export { signUp, signIn };
