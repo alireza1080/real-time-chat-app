@@ -138,7 +138,7 @@ const signIn = async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: 'Sign in successful',
-      data: user,
+      data: { ...user, password: undefined },
     });
   } catch (error) {
     console.log('Error in signIn', error);
@@ -149,4 +149,18 @@ const signIn = async (req: Request, res: Response) => {
   }
 };
 
-export { signUp, signIn };
+const getUser = async (req: Request, res: Response) => {};
+
+const updateUser = async (req: Request, res: Response) => {};
+
+const logout = async (req: Request, res: Response) => {
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== 'development',
+    maxAge: 0,
+    sameSite: 'strict',
+  });
+  res.json({ success: true, message: 'Logged out successfully' });
+};
+
+export { signUp, signIn, getUser, updateUser, logout };
