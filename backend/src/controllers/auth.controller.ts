@@ -229,13 +229,13 @@ const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    console.log('req.body', req.body);
     if (!req.body) {
       return res.status(400).json({
         success: false,
         message: 'Profile picture is required',
       });
     }
+
     const { profilePicture } = req.body;
 
     //!Upload image to cloudinary
