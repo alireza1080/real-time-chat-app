@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import generateToken from '../utils/generateToken.utils.js';
 import signInValidator from '../validators/signIn.validator.js';
 import cloudinary from '../utils/cloudinary.js';
+import idValidator from '../validators/id.validator.js';
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -173,6 +174,15 @@ const getUser = async (req: Request, res: Response) => {
       });
     }
 
+    const { error } = idValidator.safeParse(req.userId);
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID',
+      });
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: req.userId },
       omit: {
@@ -207,6 +217,15 @@ const updateUser = async (req: Request, res: Response) => {
       return res.status(401).json({
         success: false,
         message: 'User is not logged in and cannot update user profile',
+      });
+    }
+
+    const { error } = idValidator.safeParse(req.userId);
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID',
       });
     }
 
