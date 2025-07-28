@@ -167,6 +167,12 @@ const sendMessage = async (req: Request, res: Response) => {
       });
     }
 
+    //!Upload image to cloudinary
+    //!
+    //!
+    //!
+    //!
+
     const message = await prisma.message.create({
       data: {
         senderId: mainUserId,

@@ -238,6 +238,12 @@ const updateUser = async (req: Request, res: Response) => {
     }
     const { profilePicture } = req.body;
 
+    //!Upload image to cloudinary
+    //!
+    //!
+    //!
+    //!
+
     if (!profilePicture) {
       return res.status(400).json({
         success: false,
