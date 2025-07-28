@@ -4,6 +4,7 @@ import { prisma } from '../services/database.service.js';
 import bcrypt from 'bcryptjs';
 import generateToken from '../utils/generateToken.utils.js';
 import signInValidator from '../validators/signIn.validator.js';
+import cloudinary from '../utils/cloudinary.js';
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -16,7 +17,7 @@ const signUp = async (req: Request, res: Response) => {
 
     if (!req.body)
       return res.status(400).json({
-        message: 'fullName, email, password are required',
+        message: 'full name, email, password are required',
         success: false,
       });
 
@@ -37,7 +38,7 @@ const signUp = async (req: Request, res: Response) => {
 
     const user = await prisma.user.findUnique({
       where: {
-        email,
+        email: data.email,
       },
     });
 
@@ -207,6 +208,27 @@ const updateUser = async (req: Request, res: Response) => {
         success: false,
         message: 'User is not logged in and cannot update user profile',
       });
+    }
+
+    console.log('req.body', req.body);
+    if (!req.body) {
+      return res.status(400).json({
+        success: false,
+        message: 'Profile picture is required',
+      });
+    }
+    const { profilePicture } = req.body;
+
+    if (!profilePicture) {
+      return res.status(400).json({
+        success: false,
+        message: 'Profile picture is required',
+      });
+    }
+
+    if (profilePicture) {
+      const uploadResponse = await cloudinary.uploader.upload(profilePicture);
+      console.log('uploadResponse', uploadResponse);
     }
   } catch (error) {
     console.log('Error in updateUser', error);
