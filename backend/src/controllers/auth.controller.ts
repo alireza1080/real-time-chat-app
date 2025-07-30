@@ -22,12 +22,13 @@ const signUp = async (req: Request, res: Response) => {
         success: false,
       });
 
-    const { fullName, email, password } = req.body;
+    const { fullName, email, password, confirmPassword } = req.body;
 
     const { success, error, data } = signUpValidator.safeParse({
       fullName,
       email,
       password,
+      confirmPassword,
     });
 
     if (!success) {
@@ -55,7 +56,9 @@ const signUp = async (req: Request, res: Response) => {
 
     const newUser = await prisma.user.create({
       data: {
-        ...data,
+        fullName: data.fullName,
+        email: data.email,
+        profilePicture: data.profilePicture,
         password: hashedPassword,
       },
       omit: {

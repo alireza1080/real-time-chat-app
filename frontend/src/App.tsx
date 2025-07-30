@@ -1,21 +1,17 @@
-import Navbar from './components/Navbar'
-import { Outlet } from 'react-router-dom'
-import useAuthStore from './store/authStore'
-import { useEffect } from 'react'
+import Navbar from "./components/Navbar";
+import { Outlet } from "react-router-dom";
+import { Toaster } from "sonner";
 
 const App = () => {
-  const checkAuth = useAuthStore((state) => state.checkAuth)
-
-  useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
-
   return (
-    <div>
+    <div className="flex h-screen w-full flex-col">
       <Navbar />
-      <Outlet />
+      <div className="flex-1">
+        <Outlet />
+      </div>
+      <Toaster position="top-center" richColors />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

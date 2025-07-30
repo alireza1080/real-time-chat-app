@@ -1,7 +1,16 @@
+import useAuthStore from "../store/authStore";
+import Loader from "../components/Loader";
+import useProtectRoute from "../hooks/useProtectRoute";
+
 const SettingsPage = () => {
-  return (
-    <div>SettingsPage</div>
-  )
-}
+  useProtectRoute();
+  const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
+
+  if (isCheckingAuth) {
+    return <Loader />;
+  }
+
+  return <div>SettingsPage</div>;
+};
 
 export default SettingsPage;

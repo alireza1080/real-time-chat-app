@@ -48,7 +48,15 @@ const signUpValidator = z
         /[!@#$%^&*(),.?":{}|<>]/,
         'Password must contain at least one special character',
       ),
+    confirmPassword: z.string({
+      required_error: 'Confirm password is required',
+      invalid_type_error: 'Confirm password must be a string',
+    }),
     profilePicture: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
   })
   .transform((data) => ({
     ...data,

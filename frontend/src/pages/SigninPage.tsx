@@ -1,7 +1,16 @@
+import useAuthStore from "../store/authStore";
+import Loader from "../components/Loader";
+import useGuestRoute from "../hooks/useGuestRoute";
+
 const SigninPage = () => {
-  return (
-    <div>SigninPage</div>
-  )
-}
+  useGuestRoute();
+  const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
+
+  if (isCheckingAuth) {
+    return <Loader />;
+  }
+
+  return <div>SigninPage</div>;
+};
 
 export default SigninPage;
