@@ -14,11 +14,11 @@ const useGuestRoute = () => {
       toast.error("You are already logged in");
       navigate("/", { replace: true });
     }
-  }, []);
+  }, [authUser, checkAuth, navigate]);
 
   useEffect(() => {
     checkGuestsCallback();
-  }, []);
+  }, [checkGuestsCallback]);
 };
 
 export default useGuestRoute;

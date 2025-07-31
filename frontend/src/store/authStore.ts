@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import axiosInstance from "../lib/axiosInstace";
 import { AxiosError } from "axios";
+import { toast } from "sonner";
+import type { NavigateFunction } from "react-router-dom";
 
 type User = {
   id: string;
@@ -20,6 +22,18 @@ type AuthStore = {
   isCheckingAuth: boolean;
 
   checkAuth: () => Promise<void>;
+  signUp: (
+    fullName: string,
+    email: string,
+    password: string,
+    confirmPassword: string,
+    navigate: NavigateFunction,
+  ) => Promise<void>;
+  signIn: (
+    email: string,
+    password: string,
+    navigate: NavigateFunction,
+  ) => Promise<void>;
 };
 
 type Response = {
@@ -37,7 +51,6 @@ const useAuthStore = create<AuthStore>()(
     isCheckingAuth: true,
 
     checkAuth: async () => {
-      console.log("checkAuth");
       try {
         const { data } = await axiosInstance.get<Response>("/auth/get-user");
 
@@ -49,6 +62,62 @@ const useAuthStore = create<AuthStore>()(
         set({ authUser: null });
       } finally {
         set({ isCheckingAuth: false });
+      }
+    },
+
+    signUp: async (fullName, email, password, confirmPassword, navigate) => {
+      try {
+        set({ isSigningUp: true });
+        const { data } = await axiosInstance.post<Response>("/auth/signup", {
+          fullName,
+          email,
+          password,
+          confirmPassword,
+        });
+
+        if (data.success) {
+          toast.success(data.message);
+          navigate("/");
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message);
+          return;
+        }
+
+        console.log(error);
+        toast.error("Something went wrong");
+      } finally {
+        set({ isSigningUp: false });
+      }
+    },
+
+    signIn: async (email, password, navigate) => {
+      try {
+        set({ isSigningIn: true });
+        const { data } = await axiosInstance.post<Response>("/auth/signin", {
+          email,
+          password,
+        });
+
+        if (data.success) {
+          toast.success(data.message);
+          navigate("/");
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message);
+          return;
+        }
+
+        console.log(error);
+        toast.error("Something went wrong");
+      } finally {
+        set({ isSigningIn: false });
       }
     },
   })),
