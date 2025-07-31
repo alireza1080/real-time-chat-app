@@ -8,6 +8,7 @@ import SignupPage from "./pages/SignupPage.tsx";
 import SigninPage from "./pages/SigninPage.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
+import { ThemeProvider } from "./components/ui/theme-provider.tsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />,
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </StrictMode>,
 );
