@@ -167,11 +167,15 @@
   --tracking-wide: calc(var(--tracking-normal) + 0.025em);
   --tracking-wider: calc(var(--tracking-normal) + 0.05em);
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
+  --shadow-input:
+    0px 2px 3px -1px rgba(0, 0, 0, 0.1), 0px 1px 0px 0px rgba(25, 28, 33, 0.02),
+    0px 0px 0px 1px rgba(25, 28, 33, 0.08);
 }
 
 body {
   letter-spacing: var(--tracking-normal);
-  @apply bg-background text-foreground h-screen w-full overflow-y-hidden;
+  @apply bg-background text-foreground min-h-screen w-full;
 }
 
 @layer base {
