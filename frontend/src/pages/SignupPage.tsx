@@ -1,10 +1,10 @@
 import useAuthStore from "../store/authStore";
 import Loader from "../components/Loader";
 import SignupForm from "../components/SignupForm";
-import useProtectRoute from "../hooks/useProtectRoute";
+import useOnlyGuestUser from "../hooks/useOnlyGuestUser";
 
 const SignupPage = () => {
-  useProtectRoute("guest");
+  useOnlyGuestUser();
 
   const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
 

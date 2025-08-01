@@ -2,6 +2,7 @@ import Logo from "@/assets/Logo.png";
 import { Button } from "../components/ui/button";
 import { Settings } from "lucide-react";
 import { ModeToggle } from "./ui/mode-toggle";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
@@ -10,7 +11,7 @@ function Navbar() {
         {/* Left side */}
         <div className="flex items-center gap-2">
           {/* Main nav */}
-          <a href="/" className="text-primary hover:text-primary/90">
+          <Link to="/" className="text-primary hover:text-primary/90">
             <div className="flex items-center gap-4">
               <img src={Logo} alt="Logo" className="h-8 w-auto" />
 
@@ -18,16 +19,16 @@ function Navbar() {
                 ChatsApp
               </h3>
             </div>
-          </a>
+          </Link>
         </div>
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle />
           <Button asChild size="sm" className="text-sm">
-            <a href="/settings">
+            <Link to="/settings">
               <Settings />
               <h3 className="hidden sm:block">Settings</h3>
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

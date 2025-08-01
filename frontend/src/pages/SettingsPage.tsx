@@ -1,9 +1,9 @@
 import useAuthStore from "../store/authStore";
 import Loader from "../components/Loader";
-import useProtectRoute from "../hooks/useProtectRoute";
+import useOnlyAuthenticatedUser from "../hooks/useOnlyAuthenticatedUser";
 
 const SettingsPage = () => {
-  useProtectRoute("auth");
+  useOnlyAuthenticatedUser();
 
   const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
 

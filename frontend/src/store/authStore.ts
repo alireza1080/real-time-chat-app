@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import axiosInstance from "../lib/axiosInstace";
+import axiosInstance from "../lib/axiosInstance";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import type { NavigateFunction } from "react-router-dom";
