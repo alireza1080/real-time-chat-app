@@ -1,16 +1,8 @@
-import useAuthStore from "../store/authStore";
-import Loader from "../components/Loader";
-import SignupForm from "../components/SignupForm";
 import useOnlyGuestUser from "../hooks/useOnlyGuestUser";
+import SignupForm from "../components/SignupForm";
 
 const SignupPage = () => {
   useOnlyGuestUser();
-
-  const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
-
-  if (isCheckingAuth) {
-    return <Loader />;
-  }
 
   return (
     <div className="flex h-full w-full items-center justify-center px-5 py-10">

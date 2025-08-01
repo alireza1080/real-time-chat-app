@@ -1,18 +1,23 @@
 import Navbar from "./components/Navbar";
 import { Outlet } from "react-router-dom";
-import { Toaster } from "sonner";
-import { useWindowSize } from "./hooks/guarahooks/use-window-size";
+import ToasterWrapper from "./components/ToasterWrapper";
+import useAuthStore from "./store/authStore";
+import { useEffect } from "react";
+import Loader from "./components/Loader";
 
 const App = () => {
-  const { width } = useWindowSize();
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+  const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   return (
-    <div className="flex h-screen w-full flex-col xl:container xl:mx-auto">
+    <div className="flex h-screen w-full max-w-full flex-col overflow-x-hidden xl:container xl:mx-auto">
       <Navbar />
-      <div className="flex-1">
-        <Outlet />
-      </div>
-      <Toaster position={width < 768 ? "bottom-right" : "top-center"} />
+      <div className="flex-1">{isCheckingAuth ? <Loader /> : <Outlet />}</div>
+      <ToasterWrapper />
     </div>
   );
 };

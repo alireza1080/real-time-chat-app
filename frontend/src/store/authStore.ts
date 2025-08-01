@@ -81,6 +81,7 @@ const useAuthStore = create<AuthStore>()(
         });
 
         if (data.success) {
+          set({ authUser: data.data });
           toast.success(data.message);
           navigate("/");
         } else {
@@ -108,6 +109,7 @@ const useAuthStore = create<AuthStore>()(
         });
 
         if (data.success) {
+          set({ authUser: data.data });
           toast.success(data.message);
           navigate("/");
         } else {
