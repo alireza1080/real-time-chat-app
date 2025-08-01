@@ -3,7 +3,8 @@ import Loader from "../components/Loader";
 import useProtectRoute from "../hooks/useProtectRoute";
 
 const ProfilePage = () => {
-  useProtectRoute();
+  useProtectRoute("auth");
+
   const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
 
   if (isCheckingAuth) {

@@ -21,6 +21,7 @@ type AuthStore = {
   isUpdatingProfile: boolean;
   isCheckingAuth: boolean;
 
+  setIsCheckingAuth: (isCheckingAuth: boolean) => void;
   checkAuth: () => Promise<void>;
   signUp: (
     fullName: string,
@@ -49,6 +50,10 @@ const useAuthStore = create<AuthStore>()(
     isSigningIn: false,
     isUpdatingProfile: false,
     isCheckingAuth: true,
+
+    setIsCheckingAuth: (isCheckingAuth: boolean) => {
+      set({ isCheckingAuth });
+    },
 
     checkAuth: async () => {
       try {
