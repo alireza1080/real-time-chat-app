@@ -12,7 +12,7 @@ const useOnlyGuestUser = () => {
       navigate("/");
       toast.error("You are logged in.");
     }
-  }, [authUser]);
+  }, []);
 };
 
 export default useOnlyGuestUser;

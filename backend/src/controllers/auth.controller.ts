@@ -113,7 +113,7 @@ const signIn = async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
 
-    const { success } = signInValidator.safeParse({
+    const { success, data } = signInValidator.safeParse({
       email,
       password,
     });
@@ -126,7 +126,7 @@ const signIn = async (req: Request, res: Response) => {
     }
 
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: data.email },
     });
 
     if (!user) {

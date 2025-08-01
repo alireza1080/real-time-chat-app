@@ -35,6 +35,7 @@ type AuthStore = {
     password: string,
     navigate: NavigateFunction,
   ) => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 type Response = {
@@ -125,6 +126,19 @@ const useAuthStore = create<AuthStore>()(
         toast.error("Something went wrong");
       } finally {
         set({ isSigningIn: false });
+      }
+    },
+
+    signOut: async () => {
+      try {
+        await axiosInstance.delete("/auth/logout");
+        toast.success("Signed out successfully");
+        set({ authUser: null });
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message);
+          console.log(error.response?.data);
+        }
       }
     },
   })),
