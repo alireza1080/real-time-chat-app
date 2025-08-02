@@ -35,6 +35,7 @@ type AuthStore = {
     navigate: NavigateFunction,
   ) => Promise<void>;
   signOut: () => Promise<void>;
+  updateProfilePicture: (file: File) => Promise<void>;
 };
 
 type Response = {
@@ -134,6 +135,46 @@ const useAuthStore = create<AuthStore>()(
           toast.error(error.response?.data.message);
           console.log(error.response?.data);
         }
+      }
+    },
+
+    updateProfilePicture: async (file: File) => {
+      try {
+        set({ isUpdatingProfile: true });
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = async () => {
+          const base64Image = reader.result as string;
+          const { data } = await axiosInstance.put<Response>(
+            "/auth/update-user",
+            {
+              profilePicture: base64Image,
+            },
+          );
+
+          if (data.success) {
+            set({ authUser: data.data });
+            toast.success(data.message);
+          } else {
+            toast.error(data.message);
+          }
+        };
+
+        reader.onerror = () => {
+          toast.error("Failed to read file");
+        };
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message);
+          return;
+        }
+
+        console.log(error);
+        toast.error("Something went wrong");
+      } finally {
+        set({ isUpdatingProfile: false });
       }
     },
   })),

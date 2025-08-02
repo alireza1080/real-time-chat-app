@@ -232,6 +232,17 @@ const updateUser = async (req: Request, res: Response) => {
       });
     }
 
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
     if (!req.body) {
       return res.status(400).json({
         success: false,
@@ -241,18 +252,20 @@ const updateUser = async (req: Request, res: Response) => {
 
     const { profilePicture } = req.body;
 
-    //!Upload image to cloudinary
-    //!
-    //!
-    //!
-    //!
-
+    
     if (!profilePicture) {
       return res.status(400).json({
         success: false,
         message: 'Profile picture is required',
       });
     }
+
+    console.log('profilePicture', profilePicture);
+    //!Upload image to cloudinary
+    //!
+    //!
+    //!
+    //!
 
     if (profilePicture) {
       const uploadResponse = await cloudinary.uploader.upload(profilePicture);
