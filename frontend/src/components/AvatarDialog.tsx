@@ -12,7 +12,7 @@ import {
 
 import { Camera } from "lucide-react";
 import AvatarUploader from "./AvatarUploader";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useAuthStore from "../store/authStore";
 import { toast } from "sonner";
 
@@ -23,6 +23,7 @@ const AvatarDialog = () => {
   const isUpdatingProfile = useAuthStore((state) => state.isUpdatingProfile);
 
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const closeDialogButton = useRef<HTMLButtonElement>(null);
 
   const handleUpload = async () => {
     if (!profilePicture) {
@@ -30,7 +31,7 @@ const AvatarDialog = () => {
       return;
     }
 
-    await updateProfilePicture(profilePicture);
+    await updateProfilePicture(profilePicture, closeDialogButton.current);
   };
 
   return (
@@ -60,6 +61,7 @@ const AvatarDialog = () => {
               variant="outline"
               className="cursor-pointer"
               onClick={() => setProfilePicture(null)}
+              ref={closeDialogButton}
             >
               Cancel
             </Button>

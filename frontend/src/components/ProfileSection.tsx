@@ -1,4 +1,5 @@
 import AvatarSection from "./AvatarSection";
+import ReadOnlyInput from "./ReadOnlyInput";
 import {
   Card,
   CardContent,
@@ -8,8 +9,11 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Separator } from "./ui/separator";
+import useAuthStore from "../store/authStore";
 
 const ProfileSection = () => {
+  const authUser = useAuthStore((state) => state.authUser);
+
   return (
     <Card className="mx-auto w-full max-w-sm">
       <CardHeader className="flex flex-col items-center gap-2">
@@ -20,7 +24,15 @@ const ProfileSection = () => {
         </CardContent>
       </CardHeader>
       <Separator />
-      <CardContent></CardContent>
+      <CardContent>
+        <div className="flex flex-col gap-6">
+          <ReadOnlyInput
+            label="Full Name"
+            value={authUser?.fullName as string}
+          />
+          <ReadOnlyInput label="Email" value={authUser?.email as string} />
+        </div>
+      </CardContent>
       <Separator />
       <CardFooter className="flex-col gap-2"></CardFooter>
     </Card>

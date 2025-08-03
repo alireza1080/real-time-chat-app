@@ -35,7 +35,10 @@ type AuthStore = {
     navigate: NavigateFunction,
   ) => Promise<void>;
   signOut: () => Promise<void>;
-  updateProfilePicture: (file: File) => Promise<void>;
+  updateProfilePicture: (
+    file: File,
+    closeDialogButton: HTMLButtonElement | null,
+  ) => Promise<void>;
 };
 
 type Response = {
@@ -138,33 +141,25 @@ const useAuthStore = create<AuthStore>()(
       }
     },
 
-    updateProfilePicture: async (file: File) => {
+    updateProfilePicture: async (file, closeDialogButton) => {
       try {
         set({ isUpdatingProfile: true });
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
+        const formData = new FormData();
+        formData.append("profilePicture", file);
 
-        reader.onload = async () => {
-          const base64Image = reader.result as string;
-          const { data } = await axiosInstance.put<Response>(
-            "/auth/update-user",
-            {
-              profilePicture: base64Image,
-            },
-          );
+        const { data } = await axiosInstance.put<Response>(
+          "/auth/update-user",
+          formData,
+        );
 
-          if (data.success) {
-            set({ authUser: data.data });
-            toast.success(data.message);
-          } else {
-            toast.error(data.message);
-          }
-        };
-
-        reader.onerror = () => {
-          toast.error("Failed to read file");
-        };
+        if (data.success) {
+          set({ authUser: data.data });
+          toast.success(data.message);
+          closeDialogButton?.click();
+        } else {
+          toast.error(data.message);
+        }
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           toast.error(error.response?.data.message);

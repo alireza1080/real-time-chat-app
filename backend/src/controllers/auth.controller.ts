@@ -4,8 +4,9 @@ import { prisma } from '../services/database.service.js';
 import bcrypt from 'bcryptjs';
 import generateToken from '../utils/generateToken.utils.js';
 import signInValidator from '../validators/signIn.validator.js';
-import cloudinary from '../utils/cloudinary.js';
 import idValidator from '../validators/id.validator.js';
+import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { s3Client } from '../utils/upload.js';
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -243,34 +244,62 @@ const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    if (!req.body) {
+    if (!req.file) {
       return res.status(400).json({
         success: false,
         message: 'Profile picture is required',
       });
     }
 
-    const { profilePicture } = req.body;
+    const { buffer, originalname } = req.file;
 
-    
-    if (!profilePicture) {
+    if (!buffer || !originalname) {
       return res.status(400).json({
         success: false,
         message: 'Profile picture is required',
       });
     }
 
-    console.log('profilePicture', profilePicture);
-    //!Upload image to cloudinary
-    //!
-    //!
-    //!
-    //!
+    const fileExtension = originalname.split('.').pop();
+    const fileName = `${user.id}-${Date.now()}.${fileExtension}`;
 
-    if (profilePicture) {
-      const uploadResponse = await cloudinary.uploader.upload(profilePicture);
-      console.log('uploadResponse', uploadResponse);
+    const command = new PutObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: fileName,
+      Body: buffer,
+    });
+
+    const uploadResult = await s3Client.send(command);
+
+    if (uploadResult.$metadata.httpStatusCode !== 200) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to upload profile picture',
+      });
     }
+
+    const profilePictureUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { profilePicture: profilePictureUrl },
+      omit: {
+        password: true,
+      }
+    });
+
+    if (!updatedUser) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to update user profile',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile picture updated successfully',
+      data: updatedUser,
+    });
   } catch (error) {
     console.log('Error in updateUser', error);
     return res.status(500).json({
