@@ -40,7 +40,7 @@ const AvatarDialog = () => {
         <Button
           variant="outline"
           size="icon"
-          className="absolute -right-2 -bottom-2 !cursor-pointer rounded-full !p-0 !text-white transition-all hover:!bg-gray-800 sm:-right-1 sm:-bottom-1 md:right-0 md:bottom-0"
+          className="dark:hover:text-primary absolute -right-2 -bottom-2 !cursor-pointer rounded-full !p-0 transition-all sm:-right-1 sm:-bottom-1 md:right-0 md:bottom-0 dark:text-white hover:dark:!bg-gray-800"
         >
           <Camera />
         </Button>
