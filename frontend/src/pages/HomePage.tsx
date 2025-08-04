@@ -16,10 +16,24 @@ const HomePage = () => {
   }, [authUser]);
 
   return (
-    <div ref={homePageRef} className="opacity-0">
-      HomePage
+    <div ref={homePageRef} className="flex flex-1 bg-blue-700 opacity-0">
+      <div className="bg-red-500">Contacts</div>
+      <div className="bg-green-800">Chat</div>
     </div>
   );
 };
 
 export default HomePage;
+{
+  /* 
+https://ui.shadcn.com/docs/components/resizable
+https://ui.shadcn.com/docs/components/scroll-area
+https://ui.shadcn.com/docs/components/sheet
+https://ui.shadcn.com/docs/components/sidebar
+https://ui.shadcn.com/docs/components/skeleton
+https://ui.aceternity.com/components/github-globe
+https://ui.aceternity.com/components/world-map
+https://originui.com/avatar
+https://magicui.design/docs/components/pointer
+*/
+}

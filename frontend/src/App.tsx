@@ -16,7 +16,9 @@ const App = () => {
   return (
     <div className="flex h-screen w-full max-w-full flex-col overflow-x-hidden xl:container xl:mx-auto">
       <Navbar />
-      <div className="flex-1">{isCheckingAuth ? <Loader /> : <Outlet />}</div>
+      <main className="flex flex-1">
+        {isCheckingAuth ? <Loader /> : <Outlet />}
+      </main>
       <ToasterWrapper />
     </div>
   );
