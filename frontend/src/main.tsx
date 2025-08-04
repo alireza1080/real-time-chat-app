@@ -5,7 +5,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/HomePage.tsx";
 import SignupPage from "./pages/SignupPage.tsx";
 import SigninPage from "./pages/SigninPage.tsx";
-import SettingsPage from "./pages/SettingsPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import { ThemeProvider } from "./components/ui/theme-provider.tsx";
 
@@ -26,10 +25,6 @@ const router = createBrowserRouter([
       {
         path: "/signin",
         element: <SigninPage />,
-      },
-      {
-        path: "/settings",
-        element: <SettingsPage />,
       },
       {
         path: "/profile",

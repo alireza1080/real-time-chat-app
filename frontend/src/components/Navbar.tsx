@@ -28,12 +28,7 @@ function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle />
-          <Button asChild size="sm" className="text-sm">
-            <Link to="/settings">
-              <Settings />
-              <h3 className="hidden sm:block">Settings</h3>
-            </Link>
-          </Button>
+
           {authUser && (
             <Button asChild size="sm" className="text-sm">
               <Link to="/profile">
