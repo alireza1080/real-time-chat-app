@@ -1,6 +1,6 @@
 import { Cropper as CropperPrimitive } from "@origin-space/image-cropper";
 
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 function Cropper({
   className,

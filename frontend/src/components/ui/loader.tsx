@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, type Transition } from "motion/react";
 
 export const LoaderOne = () => {
   const transition = (x: number) => {
@@ -19,7 +19,7 @@ export const LoaderOne = () => {
         animate={{
           y: [0, 10, 0],
         }}
-        transition={transition(0)}
+        transition={transition(0) as unknown as Transition}
         className="h-4 w-4 rounded-full border border-neutral-300 bg-gradient-to-b from-neutral-400 to-neutral-300"
       />
       <motion.div
@@ -29,7 +29,7 @@ export const LoaderOne = () => {
         animate={{
           y: [0, 10, 0],
         }}
-        transition={transition(1)}
+        transition={transition(1) as unknown as Transition}
         className="h-4 w-4 rounded-full border border-neutral-300 bg-gradient-to-b from-neutral-400 to-neutral-300"
       />
       <motion.div
@@ -39,7 +39,7 @@ export const LoaderOne = () => {
         animate={{
           y: [0, 10, 0],
         }}
-        transition={transition(2)}
+        transition={transition(2) as unknown as Transition}
         className="h-4 w-4 rounded-full border border-neutral-300 bg-gradient-to-b from-neutral-400 to-neutral-300"
       />
     </div>

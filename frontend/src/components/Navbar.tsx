@@ -1,6 +1,6 @@
 import Logo from "@/assets/Logo.png";
 import { Button } from "../components/ui/button";
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { ModeToggle } from "./ui/mode-toggle";
 import { Link } from "react-router-dom";
 import useAuthStore from "../store/authStore";

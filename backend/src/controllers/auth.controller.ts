@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import generateToken from '../utils/generateToken.utils.js';
 import signInValidator from '../validators/signIn.validator.js';
 import idValidator from '../validators/id.validator.js';
-import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { s3Client } from '../utils/upload.js';
 
 const signUp = async (req: Request, res: Response) => {
