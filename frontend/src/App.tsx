@@ -14,9 +14,9 @@ const App = () => {
   }, []);
 
   return (
-    <div className="flex h-screen w-full max-w-full flex-col overflow-x-hidden xl:container xl:mx-auto">
+    <div className="flex h-screen w-full max-w-full flex-col overflow-hidden overflow-x-hidden xl:container xl:mx-auto">
       <Navbar />
-      <main className="flex flex-1">
+      <main className="flex flex-1 overflow-y-auto">
         {isCheckingAuth ? <Loader /> : <Outlet />}
       </main>
       <ToasterWrapper />

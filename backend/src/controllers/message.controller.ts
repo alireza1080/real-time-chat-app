@@ -28,6 +28,9 @@ const getUsers = async (req: Request, res: Response) => {
       omit: {
         password: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return res.status(200).json({

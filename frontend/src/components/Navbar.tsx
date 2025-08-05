@@ -1,16 +1,17 @@
 import Logo from "@/assets/Logo.png";
 import { Button } from "../components/ui/button";
-import { LogOut, User } from "lucide-react";
+import { Contact, LogOut, User } from "lucide-react";
 import { ModeToggle } from "./ui/mode-toggle";
 import { Link } from "react-router-dom";
 import useAuthStore from "../store/authStore";
+import Contacts from "./Contacts";
 
 function Navbar() {
   const authUser = useAuthStore((state) => state.authUser);
   const signOut = useAuthStore((state) => state.signOut);
 
   return (
-    <header className="border-b px-4 md:px-6">
+    <header className="bg-background sticky top-0 z-50 border-b px-4 md:px-6">
       <div className="flex h-16 items-center justify-between gap-4">
         {/* Left side */}
         <div className="flex items-center gap-2">
@@ -36,6 +37,16 @@ function Navbar() {
                 <h3 className="hidden sm:block">Profile</h3>
               </Link>
             </Button>
+          )}
+          {authUser && (
+            <Contacts>
+              <Button asChild size="sm" className="text-sm">
+                <Link to="/">
+                  <Contact />
+                  <h3 className="hidden sm:block">Contacts</h3>
+                </Link>
+              </Button>
+            </Contacts>
           )}
           {authUser && (
             <Button asChild size="sm" className="text-sm">
