@@ -29,10 +29,12 @@ type ChatStore = {
   selectedUser: User | null;
   isUsersLoading: boolean;
   isMessagesLoading: boolean;
+  isSendingMessage: boolean;
 
   getUsers: () => Promise<void>;
   getMessages: () => Promise<void>;
-  setSelectedUser: (user: User) => void;
+  setSelectedUser: (user: User | null) => void;
+  sendMessage: (message: string, receiverId: string) => Promise<void>;
 };
 
 type Response<T> = {
@@ -86,6 +88,19 @@ const useChatStore = create<ChatStore>()(
 
     setSelectedUser: (user) => {
       set({ selectedUser: user });
+    },
+
+    sendMessage: async (message: string, receiverId: string) => {
+      try {
+        set({ isSendingMessage: true });
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          return toast.error(error.response?.data.message);
+        }
+        console.log(error);
+      } finally {
+        set({ isSendingMessage: false });
+      }
     },
   })),
 );

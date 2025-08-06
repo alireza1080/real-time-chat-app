@@ -21,10 +21,10 @@ const sendMessageValidator = z
       .trim()
       .optional(),
     image: z
-      .string({
-        invalid_type_error: 'Image must be a string',
+      .instanceof(File)
+      .refine((file) => file.size <= 1024 * 1024 * 5, {
+        message: 'Image must be less than 5MB',
       })
-      .trim()
       .optional(),
   })
   .refine((data) => data.text || data.image, {

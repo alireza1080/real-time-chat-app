@@ -140,6 +140,14 @@ const sendMessage = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Unauthorized', success: false });
     }
 
+    const { error: mainUserIdError } = idValidator.safeParse(mainUserId);
+
+    if (mainUserIdError) {
+      return res
+        .status(400)
+        .json({ message: 'Invalid main user ID', success: false });
+    }
+
     const { id: contactUserId } = req.params;
 
     if (!contactUserId) {
@@ -148,33 +156,33 @@ const sendMessage = async (req: Request, res: Response) => {
         .json({ message: 'Contact ID is required', success: false });
     }
 
-    if (!req.body) {
+    const { error: contactUserIdError } = idValidator.safeParse(contactUserId);
+
+    if (contactUserIdError) {
       return res
         .status(400)
-        .json({ message: 'Text or image is required', success: false });
+        .json({ message: 'Invalid contact user ID', success: false });
     }
 
-    const { text, image } = req.body;
+    const text = req.body?.text || '';
 
-    const { error } = sendMessageValidator.safeParse({
-      senderId: mainUserId,
-      receiverId: contactUserId,
-      text,
-      image,
-    });
+    const image = req.file || undefined;
 
-    if (error) {
-      return res.status(400).json({
-        message: error.issues[0].message,
-        success: false,
-      });
+    if (!text && !image) {
+      return res
+        .status(400)
+        .json({ message: 'Either text or an image is required', success: false });
     }
 
-    //!Upload image to cloudinary
-    //!
-    //!
-    //!
-    //!
+    if (image) {
+      //!Upload image to S3
+      //!
+      //!
+      //!
+      //!
+      //!
+      //!
+    }
 
     const message = await prisma.message.create({
       data: {

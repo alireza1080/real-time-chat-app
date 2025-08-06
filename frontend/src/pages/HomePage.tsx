@@ -1,11 +1,15 @@
 import useOnlyAuthenticatedUser from "../hooks/useOnlyAuthenticatedUser";
 import { useEffect, useRef } from "react";
 import useAuthStore from "../store/authStore";
+import useChatStore from "../store/chatStore";
+import chatSVG from "../assets/chat-svg.svg";
+import ChatSection from "../components/ChatSection";
 
 const HomePage = () => {
   useOnlyAuthenticatedUser();
 
   const authUser = useAuthStore((state) => state.authUser);
+  const selectedUser = useChatStore((state) => state.selectedUser);
 
   const homePageRef = useRef<HTMLDivElement>(null);
 
@@ -19,20 +23,15 @@ const HomePage = () => {
     <div
       ref={homePageRef}
       className="flex h-full w-full flex-1 !overflow-auto px-4 py-2 opacity-0"
-    ></div>
+    >
+      {!selectedUser && (
+        <div className="flex h-full w-full items-center justify-center">
+          <img src={chatSVG} alt="chat" className="size-2/3" />
+        </div>
+      )}
+      {selectedUser && <ChatSection />}
+    </div>
   );
 };
 
 export default HomePage;
-{
-  /* 
-https://ui.shadcn.com/docs/components/resizable
-https://ui.shadcn.com/docs/components/scroll-area
-https://ui.shadcn.com/docs/components/sheet
-https://ui.shadcn.com/docs/components/sidebar
-https://ui.shadcn.com/docs/components/skeleton
-https://ui.aceternity.com/components/github-globe
-https://ui.aceternity.com/components/world-map
-https://originui.com/avatar
-*/
-}
