@@ -251,12 +251,19 @@ const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    const { buffer, originalname } = req.file;
+    const { buffer, originalname, size } = req.file;
 
     if (!buffer || !originalname) {
       return res.status(400).json({
         success: false,
         message: 'Profile picture is required',
+      });
+    }
+
+    if (size > 1024 * 1024 * 5) {
+      return res.status(400).json({
+        success: false,
+        message: 'Profile picture must be less than 5MB',
       });
     }
 

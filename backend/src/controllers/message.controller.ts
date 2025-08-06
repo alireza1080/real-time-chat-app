@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { prisma } from '../services/database.service.js';
-import sendMessageValidator from '../validators/sendMessage.validator.js';
 import idValidator from '../validators/id.validator.js';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { s3Client } from '../utils/upload.js';
 
 const getUsers = async (req: Request, res: Response) => {
   try {
@@ -166,22 +167,39 @@ const sendMessage = async (req: Request, res: Response) => {
 
     const text = req.body?.text || '';
 
-    const image = req.file || undefined;
+    const imageFile = req.file || undefined;
 
-    if (!text && !image) {
+    if (!text && !imageFile) {
       return res
         .status(400)
         .json({ message: 'Either text or an image is required', success: false });
     }
 
-    if (image) {
-      //!Upload image to S3
-      //!
-      //!
-      //!
-      //!
-      //!
-      //!
+    let image = "";
+
+    if (imageFile) {
+      const { buffer, originalname, size } = imageFile;
+
+      if (size > 1024 * 1024 * 5) {
+        return res.status(400).json({ message: 'Image must be less than 5MB', success: false });
+      }
+
+      const fileExtension = originalname.split('.').pop();
+      const fileName = `${mainUserId}-${Date.now()}.${fileExtension}`;
+
+      const command = new PutObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: fileName,
+        Body: buffer,
+      });
+
+      const uploadResult = await s3Client.send(command);
+
+      if (uploadResult.$metadata.httpStatusCode !== 200) {
+        return res.status(500).json({ message: 'Failed to upload image', success: false });
+      }
+
+      image = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
     }
 
     const message = await prisma.message.create({
