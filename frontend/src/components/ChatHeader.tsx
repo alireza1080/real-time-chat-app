@@ -7,7 +7,7 @@ const ChatHeader = () => {
   const setSelectedUser = useChatStore((state) => state.setSelectedUser);
 
   return (
-    <div className="flex h-16 w-full items-center justify-between px-4 shadow-2xl md:h-20">
+    <div className="flex h-16 w-full items-center justify-between rounded-[22px] px-4 shadow-2xl md:h-20">
       <div className="flex items-center gap-6">
         <div className="scale-150">
           <ContactsAvatar

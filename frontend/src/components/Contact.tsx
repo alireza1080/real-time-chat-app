@@ -11,7 +11,13 @@ type User = {
   updatedAt: Date;
 };
 
-const Contact = ({ user }: { user: User }) => {
+const Contact = ({
+  user,
+  handleCloseSheet,
+}: {
+  user: User;
+  handleCloseSheet: () => void;
+}) => {
   const setSelectedUser = useChatStore((state) => state.setSelectedUser);
   const selectedUser = useChatStore((state) => state.selectedUser);
 
@@ -21,6 +27,7 @@ const Contact = ({ user }: { user: User }) => {
 
   const handleClick = () => {
     setSelectedUser(user);
+    handleCloseSheet();
   };
 
   return (

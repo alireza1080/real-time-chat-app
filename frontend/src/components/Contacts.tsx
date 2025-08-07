@@ -8,10 +8,17 @@ import {
 import { UserRoundSearch } from "lucide-react";
 import CheckOnlineSwitch from "./CheckOnlineSwitch";
 import ContactsContainer from "./ContactsContainer";
+import { useState } from "react";
 
 const Contacts = ({ children }: { children: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleCloseSheet = () => {
+    setOpen(false);
+  };
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -27,7 +34,7 @@ const Contacts = ({ children }: { children: React.ReactNode }) => {
             </article>
           </SheetTitle>
         </SheetHeader>
-        <ContactsContainer />
+        <ContactsContainer handleCloseSheet={handleCloseSheet} />
       </SheetContent>
     </Sheet>
   );

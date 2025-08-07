@@ -5,7 +5,11 @@ import useChatStore from "../store/chatStore";
 import Contact from "./Contact";
 import ContactSkeleton from "./ContactSkeleton";
 
-const ContactsContainer = () => {
+const ContactsContainer = ({
+  handleCloseSheet,
+}: {
+  handleCloseSheet: () => void;
+}) => {
   const users = useChatStore((state) => state.users);
   const isUsersLoading = useChatStore((state) => state.isUsersLoading);
   const getUsers = useChatStore((state) => state.getUsers);
@@ -19,7 +23,11 @@ const ContactsContainer = () => {
       {!isUsersLoading && (
         <div className="p-4">
           {users.map((user) => (
-            <Contact key={user.id} user={user} />
+            <Contact
+              key={user.id}
+              user={user}
+              handleCloseSheet={handleCloseSheet}
+            />
           ))}
         </div>
       )}

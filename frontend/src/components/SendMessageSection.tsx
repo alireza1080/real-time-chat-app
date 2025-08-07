@@ -1,5 +1,11 @@
+import AiInput from "./MessageInput";
+
 const SendMessageSection = () => {
-  return <div>Send message section</div>;
+  return (
+    <div className="w-full">
+      <AiInput />
+    </div>
+  );
 };
 
 export default SendMessageSection;

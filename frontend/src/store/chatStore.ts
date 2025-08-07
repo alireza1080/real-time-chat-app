@@ -32,9 +32,16 @@ type ChatStore = {
   isSendingMessage: boolean;
 
   getUsers: () => Promise<void>;
-  getMessages: () => Promise<void>;
+  getMessages: (id: string) => Promise<void>;
   setSelectedUser: (user: User | null) => void;
-  sendMessage: (message: string, receiverId: string) => Promise<void>;
+  sendMessage: (
+    text: string,
+    setText: React.Dispatch<React.SetStateAction<string>>,
+    image: File | null,
+    setImage: React.Dispatch<React.SetStateAction<File | null>>,
+    setImagePreview: React.Dispatch<React.SetStateAction<string | null>>,
+    adjustHeight: (reset?: boolean) => void,
+  ) => Promise<void>;
 };
 
 type Response<T> = {
@@ -44,12 +51,13 @@ type Response<T> = {
 };
 
 const useChatStore = create<ChatStore>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     messages: [],
     users: [],
     selectedUser: null,
     isUsersLoading: false,
     isMessagesLoading: false,
+    isSendingMessage: false,
 
     getUsers: async () => {
       try {
@@ -90,9 +98,47 @@ const useChatStore = create<ChatStore>()(
       set({ selectedUser: user });
     },
 
-    sendMessage: async (message: string, receiverId: string) => {
+    sendMessage: async (
+      text,
+      setText,
+      image,
+      setImage,
+      setImagePreview,
+      adjustHeight,
+    ) => {
       try {
         set({ isSendingMessage: true });
+
+        const selectedUser = get().selectedUser;
+
+        if (!selectedUser) {
+          return toast.error("No user selected");
+        }
+
+        if (!text && !image) {
+          return toast.error("Either text or image is required");
+        }
+
+        const formData = new FormData();
+        formData.append("text", text);
+        if (image) {
+          formData.append("image", image);
+        }
+
+        const { data } = await axiosInstance.post<Response<Message>>(
+          `/messages/send/${selectedUser?.id}`,
+          formData,
+        );
+
+        const messages = get().messages;
+
+        set({ messages: [...messages, data.data as Message] });
+        setText("");
+        setImage(null);
+        setImagePreview(null);
+        adjustHeight(true);
+
+        toast.success("Message sent successfully");
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           return toast.error(error.response?.data.message);
