@@ -128,7 +128,7 @@ const AiInput = () => {
     };
   }, [imagePreview]);
   return (
-    <div className="w-full py-4">
+    <div className="mt-2 w-full">
       <div className="bg-input relative mx-auto w-full max-w-4xl rounded-[22px] border p-1">
         {imagePreview && (
           <div className="relative mb-2 max-w-[100px]">

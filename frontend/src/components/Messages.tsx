@@ -21,12 +21,6 @@ const Messages = () => {
     }
   }, [selectedUser]);
 
-  useEffect(() => {
-    if (messages.length > 0) {
-      console.log(messages);
-    }
-  }, [messages]);
-
   return (
     <Conversation className="relative w-full" style={{ height: "100%" }}>
       <ConversationContent>

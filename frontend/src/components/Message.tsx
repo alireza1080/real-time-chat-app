@@ -16,7 +16,6 @@ const MessageComponent = ({
   avatarSrc,
   avatarName,
 }: MessageComponentProps) => {
-  console.log(imageSrc);
   return (
     <>
       <Message from={from} className="flex">
