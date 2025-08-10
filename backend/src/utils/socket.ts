@@ -1,16 +1,11 @@
 import { Server } from 'socket.io';
-import { createServer } from 'http';
-import express from 'express';
+import { server } from '../app.js';
 
 import { config } from 'dotenv';
 config();
 
 const clientUrl = process.env.CLIENT_URL;
 console.log(clientUrl);
-
-const app = express();
-
-const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
@@ -27,4 +22,4 @@ io.on('connection', (socket) => {
   });
 });
 
-export { io, server, app };
+export { io };

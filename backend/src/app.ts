@@ -7,10 +7,13 @@ import badJsonErrorHandler from './middlewares/badJsonErrorHandler.middleware.js
 import helmet from 'helmet';
 import cors from 'cors';
 import { config } from 'dotenv';
-import { app } from './utils/socket.js';
+import { createServer } from 'http';
 
 config();
 const clientUrl = process.env.CLIENT_URL;
+
+const app = express();
+const server = createServer(app);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,3 +31,5 @@ app.use(isUserLoggedIn);
 app.use(badJsonErrorHandler);
 
 app.use('/api', apiRouter);
+
+export { app, server };
