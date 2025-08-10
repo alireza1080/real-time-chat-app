@@ -5,13 +5,16 @@ import express from 'express';
 import { config } from 'dotenv';
 config();
 
+const clientUrl = process.env.CLIENT_URL;
+console.log(clientUrl);
+
 const app = express();
 
 const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: clientUrl,
     credentials: true,
   },
 });
