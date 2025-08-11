@@ -13,11 +13,21 @@ const io = new Server(server, {
   },
 });
 
+const onlineUsers = new Map<string, string>();
+
 io.on('connection', (socket) => {
-  console.log('a user connected', socket.id);
+  const userId = socket.handshake.query.userId;
+  if (userId) {
+    onlineUsers.set(userId as string, socket.id);
+    console.log('a user connected', userId);
+  }
+
+  socket.emit('getOnlineUsers', Array.from(onlineUsers.keys()));
 
   socket.on('disconnect', () => {
-    console.log('a user disconnected', socket.id);
+    onlineUsers.delete(userId as string);
+    io.emit('getOnlineUsers', Array.from(onlineUsers.keys()));
+    console.log('a user disconnected', userId);
   });
 });
 

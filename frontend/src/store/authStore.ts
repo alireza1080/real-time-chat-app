@@ -191,12 +191,29 @@ const useAuthStore = create<AuthStore>()(
       const previousSocket = get().socket;
       if (previousSocket?.connected) return;
 
-      const socket = io(import.meta.env.VITE_SOCKET_URL);
-      console.log(socket);
-      socket.connect();
-      set({ socket });
+      const socket = io(import.meta.env.VITE_SOCKET_URL, {
+        withCredentials: true,
+        query: {
+          userId: authUser.id,
+        },
+      });
+
+      socket.on("connect", () => {
+        console.log("Connected to socket");
+        set({ socket });
+      });
+
+      socket.on("connect_error", (error) => {
+        console.log("Error connecting to socket", error);
+      });
     },
-    disconnectFromSocket: () => {},
+    disconnectFromSocket: () => {
+      const socket = get().socket;
+      if (!socket?.connected) return;
+
+      socket.disconnect();
+      set({ socket: null });
+    },
   })),
 );
 
