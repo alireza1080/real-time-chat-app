@@ -1,9 +1,10 @@
+import type { NavigateFunction } from "react-router-dom";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import axiosInstance from "../lib/axiosInstance";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
-import type { NavigateFunction } from "react-router-dom";
+import { io, Socket } from "socket.io-client";
 
 type User = {
   id: string;
@@ -20,6 +21,8 @@ type AuthStore = {
   isSigningIn: boolean;
   isUpdatingProfile: boolean;
   isCheckingAuth: boolean;
+  onlineUsers: User[];
+  socket: Socket | null;
 
   checkAuth: () => Promise<void>;
   signUp: (
@@ -39,6 +42,8 @@ type AuthStore = {
     file: File,
     closeDialogButton: HTMLButtonElement | null,
   ) => Promise<void>;
+  connectToSocket: () => void;
+  disconnectFromSocket: () => void;
 };
 
 type Response = {
@@ -48,18 +53,21 @@ type Response = {
 };
 
 const useAuthStore = create<AuthStore>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     authUser: null,
     isSigningUp: false,
     isSigningIn: false,
     isUpdatingProfile: false,
     isCheckingAuth: true,
+    onlineUsers: [],
+    socket: null,
 
     checkAuth: async () => {
       try {
         const { data } = await axiosInstance.get<Response>("/auth/get-user");
 
         set({ authUser: data.data });
+        get().connectToSocket();
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           console.log(error.response?.data.message);
@@ -84,6 +92,7 @@ const useAuthStore = create<AuthStore>()(
           set({ authUser: data.data });
           toast.success(data.message);
           navigate("/");
+          get().connectToSocket();
         } else {
           toast.error(data.message);
         }
@@ -112,6 +121,7 @@ const useAuthStore = create<AuthStore>()(
           set({ authUser: data.data });
           toast.success(data.message);
           navigate("/");
+          get().connectToSocket();
         } else {
           toast.error(data.message);
         }
@@ -131,8 +141,9 @@ const useAuthStore = create<AuthStore>()(
     signOut: async () => {
       try {
         await axiosInstance.delete("/auth/logout");
-        toast.success("Signed out successfully");
         set({ authUser: null });
+        get().disconnectFromSocket();
+        toast.success("Signed out successfully");
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           toast.error(error.response?.data.message);
@@ -172,6 +183,20 @@ const useAuthStore = create<AuthStore>()(
         set({ isUpdatingProfile: false });
       }
     },
+
+    connectToSocket: () => {
+      const authUser = get().authUser;
+      if (!authUser) return;
+
+      const previousSocket = get().socket;
+      if (previousSocket?.connected) return;
+
+      const socket = io(import.meta.env.VITE_SOCKET_URL);
+      console.log(socket);
+      socket.connect();
+      set({ socket });
+    },
+    disconnectFromSocket: () => {},
   })),
 );
 

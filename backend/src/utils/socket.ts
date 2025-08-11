@@ -5,7 +5,6 @@ import { config } from 'dotenv';
 config();
 
 const clientUrl = process.env.CLIENT_URL;
-console.log(clientUrl);
 
 const io = new Server(server, {
   cors: {
