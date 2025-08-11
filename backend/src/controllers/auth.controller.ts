@@ -292,7 +292,7 @@ const updateUser = async (req: Request, res: Response) => {
       data: { profilePicture: profilePictureUrl },
       omit: {
         password: true,
-      }
+      },
     });
 
     if (!updatedUser) {

@@ -20,9 +20,16 @@ io.on('connection', (socket) => {
   if (userId) {
     onlineUsers.set(userId as string, socket.id);
     console.log('a user connected', userId);
+
+    // Emit updated online users to all clients when someone connects
+    io.emit('getOnlineUsers', Array.from(onlineUsers.keys()));
   }
 
   socket.emit('getOnlineUsers', Array.from(onlineUsers.keys()));
+
+  socket.on('getOnlineUsers', () => {
+    socket.emit('getOnlineUsers', Array.from(onlineUsers.keys()));
+  });
 
   socket.on('disconnect', () => {
     onlineUsers.delete(userId as string);

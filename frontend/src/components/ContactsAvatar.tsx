@@ -1,11 +1,21 @@
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import useAuthStore from "../store/authStore";
 
 type ContactsAvatarProps = {
-  isOnline: boolean;
+  userId: string;
   image: string;
 };
 
-const ContactsAvatar = ({ isOnline, image }: ContactsAvatarProps) => {
+const ContactsAvatar = ({ userId, image }: ContactsAvatarProps) => {
+  const onlineUsers = useAuthStore((state) => state.onlineUsers);
+  const [isOnline, setIsOnline] = useState(false);
+
+  useEffect(() => {
+    const isOnline = onlineUsers.includes(userId);
+    setIsOnline(isOnline);
+  }, [onlineUsers]);
+
   return (
     <div className="relative size-fit">
       <Avatar>

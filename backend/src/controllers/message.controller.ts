@@ -172,16 +172,21 @@ const sendMessage = async (req: Request, res: Response) => {
     if (!text && !imageFile) {
       return res
         .status(400)
-        .json({ message: 'Either text or an image is required', success: false });
+        .json({
+          message: 'Either text or an image is required',
+          success: false,
+        });
     }
 
-    let image = "";
+    let image = '';
 
     if (imageFile) {
       const { buffer, originalname, size } = imageFile;
 
       if (size > 1024 * 1024 * 5) {
-        return res.status(400).json({ message: 'Image must be less than 5MB', success: false });
+        return res
+          .status(400)
+          .json({ message: 'Image must be less than 5MB', success: false });
       }
 
       const fileExtension = originalname.split('.').pop();
@@ -196,7 +201,9 @@ const sendMessage = async (req: Request, res: Response) => {
       const uploadResult = await s3Client.send(command);
 
       if (uploadResult.$metadata.httpStatusCode !== 200) {
-        return res.status(500).json({ message: 'Failed to upload image', success: false });
+        return res
+          .status(500)
+          .json({ message: 'Failed to upload image', success: false });
       }
 
       image = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;

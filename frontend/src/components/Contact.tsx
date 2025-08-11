@@ -38,7 +38,10 @@ const Contact = ({
       onClick={handleClick}
     >
       <div className="flex items-center gap-3">
-        <ContactsAvatar isOnline={true} image={user.profilePicture as string} />
+        <ContactsAvatar
+          image={user.profilePicture as string}
+          userId={user.id}
+        />
         <div className="flex flex-col">
           <h3 className="text-sm font-medium">{user.fullName}</h3>
         </div>

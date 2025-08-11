@@ -21,7 +21,7 @@ type AuthStore = {
   isSigningIn: boolean;
   isUpdatingProfile: boolean;
   isCheckingAuth: boolean;
-  onlineUsers: User[];
+  onlineUsers: string[];
   socket: Socket | null;
 
   checkAuth: () => Promise<void>;
@@ -203,10 +203,16 @@ const useAuthStore = create<AuthStore>()(
         set({ socket });
       });
 
+      socket.on("getOnlineUsers", (onlineUsers) => {
+        console.log("Received online users:", onlineUsers);
+        set({ onlineUsers });
+      });
+
       socket.on("connect_error", (error) => {
         console.log("Error connecting to socket", error);
       });
     },
+
     disconnectFromSocket: () => {
       const socket = get().socket;
       if (!socket?.connected) return;

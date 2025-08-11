@@ -11,8 +11,8 @@ const ChatHeader = () => {
       <div className="flex items-center gap-6">
         <div className="scale-110">
           <ContactsAvatar
-            isOnline={true}
             image={selectedUser?.profilePicture as string}
+            userId={selectedUser?.id as string}
           />
         </div>
         <h3 className="hidden text-lg sm:block">{selectedUser?.fullName}</h3>
