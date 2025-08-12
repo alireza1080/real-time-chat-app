@@ -30,6 +30,7 @@ type ChatStore = {
   isUsersLoading: boolean;
   isMessagesLoading: boolean;
   isSendingMessage: boolean;
+  showOnlyOnlineUsers: boolean;
 
   getUsers: () => Promise<void>;
   getMessages: (id: string) => Promise<void>;
@@ -42,6 +43,7 @@ type ChatStore = {
     setImagePreview: React.Dispatch<React.SetStateAction<string | null>>,
     adjustHeight: (reset?: boolean) => void,
   ) => Promise<void>;
+  setShowOnlyOnlineUsers: () => void;
 };
 
 type Response<T> = {
@@ -58,6 +60,7 @@ const useChatStore = create<ChatStore>()(
     isUsersLoading: false,
     isMessagesLoading: false,
     isSendingMessage: false,
+    showOnlyOnlineUsers: false,
 
     getUsers: async () => {
       try {
@@ -147,6 +150,11 @@ const useChatStore = create<ChatStore>()(
       } finally {
         set({ isSendingMessage: false });
       }
+    },
+
+    setShowOnlyOnlineUsers: () => {
+      const showOnlyOnlineUsers = get().showOnlyOnlineUsers;
+      set({ showOnlyOnlineUsers: !showOnlyOnlineUsers });
     },
   })),
 );

@@ -14,7 +14,7 @@ const ContactsAvatar = ({ userId, image }: ContactsAvatarProps) => {
   useEffect(() => {
     const isOnline = onlineUsers.includes(userId);
     setIsOnline(isOnline);
-  }, [onlineUsers]);
+  }, [onlineUsers, userId]);
 
   return (
     <div className="relative size-fit">

@@ -4,6 +4,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import useChatStore from "../store/chatStore";
 import Contact from "./Contact";
 import ContactSkeleton from "./ContactSkeleton";
+import useAuthStore from "../store/authStore";
 
 const ContactsContainer = ({
   handleCloseSheet,
@@ -13,6 +14,10 @@ const ContactsContainer = ({
   const users = useChatStore((state) => state.users);
   const isUsersLoading = useChatStore((state) => state.isUsersLoading);
   const getUsers = useChatStore((state) => state.getUsers);
+  const showOnlyOnlineUsers = useChatStore(
+    (state) => state.showOnlyOnlineUsers,
+  );
+  const onlineUsers = useAuthStore((state) => state.onlineUsers);
 
   useEffect(() => {
     getUsers();
@@ -22,13 +27,20 @@ const ContactsContainer = ({
     <ScrollArea className="max-h-[calc(100vh-10rem)] w-full">
       {!isUsersLoading && (
         <div className="p-4">
-          {users.map((user) => (
-            <Contact
-              key={user.id}
-              user={user}
-              handleCloseSheet={handleCloseSheet}
-            />
-          ))}
+          {users
+            .filter((user) => {
+              if (showOnlyOnlineUsers) {
+                return onlineUsers.includes(user.id);
+              }
+              return true;
+            })
+            .map((user) => (
+              <Contact
+                key={user.id}
+                user={user}
+                handleCloseSheet={handleCloseSheet}
+              />
+            ))}
         </div>
       )}
       {isUsersLoading && (
