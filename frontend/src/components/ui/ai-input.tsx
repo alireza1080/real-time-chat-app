@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Globe, Paperclip, Plus, Send } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
+import { cn } from "../../lib/utils";
+import { Textarea } from "./textarea";
 
 interface UseAutoResizeTextareaProps {
   minHeight: number;
@@ -168,11 +167,9 @@ export default function AiInput() {
                 />
                 {imagePreview && (
                   <div className="absolute top-14 -left-4 h-[100px] w-[100px]">
-                    <Image
+                    <img
                       className="rounded-2xl object-cover"
                       src={imagePreview || "/picture1.jpeg"}
-                      height={500}
-                      width={500}
                       alt="additional image"
                     />
                     <button
