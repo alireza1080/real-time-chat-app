@@ -38,4 +38,9 @@ io.on('connection', (socket) => {
   });
 });
 
-export { io };
+const getReceiverSocketId = (receiverId: string) => {
+  const receiverSocketId = onlineUsers.get(receiverId);
+  return receiverSocketId;
+};
+
+export { io, getReceiverSocketId };

@@ -12,7 +12,10 @@ const ContactsAvatar = ({ userId, image }: ContactsAvatarProps) => {
   const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {
+    console.log("Online users:", onlineUsers);
+    console.log("Current userId:", userId);
     const isOnline = onlineUsers.includes(userId);
+    console.log("Is online:", isOnline);
     setIsOnline(isOnline);
   }, [onlineUsers, userId]);
 

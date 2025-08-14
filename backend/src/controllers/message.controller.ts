@@ -3,6 +3,7 @@ import { prisma } from '../services/database.service.js';
 import idValidator from '../validators/id.validator.js';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { s3Client } from '../utils/upload.js';
+import { getReceiverSocketId, io } from '../utils/socket.js';
 
 const getUsers = async (req: Request, res: Response) => {
   try {
@@ -219,10 +220,12 @@ const sendMessage = async (req: Request, res: Response) => {
     });
 
     //!Send message to socket
-    //!
-    //!
-    //!
-    //!
+    const receiverSocketId = getReceiverSocketId(contactUserId);
+
+    //! Check if receiver is online and send message to them
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('newMessage', message);
+    }
 
     return res.status(200).json({
       message: 'Message sent successfully',
