@@ -3,6 +3,7 @@ import { devtools } from "zustand/middleware";
 import axiosInstance from "../lib/axiosInstance";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import useAuthStore from "./authStore";
 
 type Message = {
   id: string;
@@ -44,6 +45,8 @@ type ChatStore = {
     adjustHeight: (reset?: boolean) => void,
   ) => Promise<void>;
   setShowOnlyOnlineUsers: () => void;
+  subscribeToNewMessages: () => Promise<void>;
+  unsubscribeFromNewMessages: () => Promise<void>;
 };
 
 type Response<T> = {
@@ -155,6 +158,36 @@ const useChatStore = create<ChatStore>()(
     setShowOnlyOnlineUsers: () => {
       const showOnlyOnlineUsers = get().showOnlyOnlineUsers;
       set({ showOnlyOnlineUsers: !showOnlyOnlineUsers });
+    },
+
+    subscribeToNewMessages: () => {
+      const selectedUser = get().selectedUser;
+
+      if (!selectedUser) {
+        return null;
+      }
+
+      const socket = useAuthStore.getState().socket;
+
+      if (!socket) {
+        return null;
+      }
+
+      socket.on("newMessage", (newMessage) => {
+        const messages = get().messages;
+
+        set({ messages: [...messages, newMessage] });
+      });
+    },
+
+    unsubscribeFromNewMessages: () => {
+      const socket = useAuthStore.getState().socket;
+
+      if (!socket) {
+        return null;
+      }
+
+      socket.off("newMessage");
     },
   })),
 );

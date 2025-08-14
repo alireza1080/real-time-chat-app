@@ -14,11 +14,31 @@ const Messages = () => {
   const messages = useChatStore((state) => state.messages);
   const isMessagesLoading = useChatStore((state) => state.isMessagesLoading);
   const getMessages = useChatStore((state) => state.getMessages);
+  const subscribeToNewMessages = useChatStore(
+    (state) => state.subscribeToNewMessages,
+  );
+  const unsubscribeFromNewMessages = useChatStore(
+    (state) => state.unsubscribeFromNewMessages,
+  );
 
   useEffect(() => {
     if (selectedUser) {
       getMessages(selectedUser.id);
     }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    if (selectedUser) {
+      subscribeToNewMessages();
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    return () => {
+      if (selectedUser) {
+        unsubscribeFromNewMessages();
+      }
+    };
   }, [selectedUser]);
 
   return (
