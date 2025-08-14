@@ -43,4 +43,4 @@ const getReceiverSocketId = (receiverId: string) => {
   return receiverSocketId;
 };
 
-export { io, getReceiverSocketId };
+export { io, getReceiverSocketId, server };

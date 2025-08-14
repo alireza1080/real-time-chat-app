@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { connectToDatabase } from './services/database.service.js';
-import { server } from './app.js';
+import { server } from './utils/socket.js';
 import './utils/socket.js';
 
 dotenv.config();
