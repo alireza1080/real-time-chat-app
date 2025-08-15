@@ -80,7 +80,7 @@ const signUp = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
     });
 
     res.json({
@@ -152,7 +152,7 @@ const signIn = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
     });
 
     res.json({
@@ -172,6 +172,14 @@ const signIn = async (req: Request, res: Response) => {
 const getUser = async (req: Request, res: Response) => {
   try {
     if (!req.isUserLoggedIn) {
+      // Remove the cookie
+      res.cookie('jwt', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development',
+        maxAge: 0,
+        sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
+      });
+
       return res.status(401).json({
         success: false,
         message: 'User is not logged in and cannot get user profile',
