@@ -173,7 +173,13 @@ const useChatStore = create<ChatStore>()(
         return null;
       }
 
-      socket.on("newMessage", (newMessage) => {
+      socket.on("newMessage", (newMessage: Message) => {
+        const selectedUser = get().selectedUser;
+
+        if (selectedUser?.id !== newMessage.senderId) {
+          return;
+        }
+
         const messages = get().messages;
 
         set({ messages: [...messages, newMessage] });

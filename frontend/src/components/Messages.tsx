@@ -12,7 +12,6 @@ const Messages = () => {
   const authUser = useAuthStore((state) => state.authUser);
   const selectedUser = useChatStore((state) => state.selectedUser);
   const messages = useChatStore((state) => state.messages);
-  const isMessagesLoading = useChatStore((state) => state.isMessagesLoading);
   const getMessages = useChatStore((state) => state.getMessages);
   const subscribeToNewMessages = useChatStore(
     (state) => state.subscribeToNewMessages,

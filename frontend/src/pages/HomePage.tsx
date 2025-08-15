@@ -10,6 +10,7 @@ const HomePage = () => {
 
   const authUser = useAuthStore((state) => state.authUser);
   const selectedUser = useChatStore((state) => state.selectedUser);
+  const setSelectedUser = useChatStore((state) => state.setSelectedUser);
 
   const homePageRef = useRef<HTMLDivElement>(null);
 
@@ -18,6 +19,12 @@ const HomePage = () => {
       homePageRef.current?.classList.remove("opacity-0");
     }
   }, [authUser]);
+
+  useEffect(() => {
+    return () => {
+      setSelectedUser(null);
+    };
+  }, []);
 
   return (
     <div
