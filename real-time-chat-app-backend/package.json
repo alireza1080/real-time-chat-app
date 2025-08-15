@@ -5,9 +5,16 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "build": "tsc && npm run copy-prisma",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio",
+    "start": "npm run build && npm run prisma:generate && npm run prisma:push && node dist/index.js",
+    "postinstall": "npm run prisma:generate",
+    "copy-prisma": "copyfiles -u 1 \"src/generated/**/*\" dist/ && mkdir -p dist/generated/prisma/runtime && copyfiles -u 2 \"src/generated/prisma/runtime/**/*\" dist/generated/prisma/runtime/"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +30,7 @@
     "@types/node": "^24.1.0",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.6.2",
